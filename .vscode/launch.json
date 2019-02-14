@@ -7,25 +7,18 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "Attach to node",
-      "port": 9229,
-      "restart": true
+      "name": "Attach",
+      "restart": true,
+      "port": 9229
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "nodemon",
-      "runtimeExecutable": "nodemon",
-      "runtimeArgs": [
-        "--nolazy"
-      ],
-      "args": ["${workspaceFolder}/src/index.ts"],
-      "restart": true,
-      "protocol": "inspector",
-      "sourceMaps": true,
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "stopOnEntry": false
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/index.js",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ]
     }
   ]
 }
