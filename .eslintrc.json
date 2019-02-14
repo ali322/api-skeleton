@@ -1,7 +1,10 @@
 {
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "prject": "./tsconfig.json"
+    "prject": "./tsconfig.json",
+    "ecmaFeatures": {
+      "experimentalDecorators": true
+    }
   },
   "extends": [
     "plugin:@typescript-eslint/recommended",
@@ -11,6 +14,7 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "@typescript-eslint/indent": "off"
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

@@ -1,9 +1,25 @@
 import * as Router from 'koa-router'
+import index from './controller'
 
 const router = new Router()
 
-router.get('/', ctx => {
-  ctx.body = 'hello world!'
-})
+function applyRoutes(router: any, ...controllers: any[]): void {
+  for(let i in controllers) {
+    const controller = controllers[i]
+    for(let k in controller.actions) {
+      const action = controller[controller.actions[k]]
+      let middlewares: any[] = []
+      if (Array.isArray(controller.middleware)) {
+        middlewares = middlewares.concat(controller.middleware)
+      }
+      if (Array.isArray(action.middleware)) {
+        middlewares = middlewares.concat(action.middleware)
+      }
+      router[action.method](controller.namespace + action.path, ...middlewares, action)
+    }
+  }
+}
+
+applyRoutes(router, index)
 
 export default router
