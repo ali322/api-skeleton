@@ -17,7 +17,7 @@ export function middleware(...middlewares: any[]): Function {
   }
 }
 
-export function route({method = 'get', path='/'}): Function {
+export function route({ method = 'get', path = '/' }): Function {
   return (target: any, key: string, descriptor: any) => {
     target.actions = target.actions || []
     target.actions.push(key)

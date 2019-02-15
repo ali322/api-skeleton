@@ -1,13 +1,6 @@
-import {middleware, route, namespace} from '../lib/decorator'
-import log from '../middleware/log'
+import main from './main'
+import forum from './forum'
 
-@middleware(log)
-@namespace()
-class Index{
-  @route({method: 'get', path: '/'})
-  public index(ctx: any): void {
-    ctx.body = 'hello world'
-  }
-}
-
-export default new Index()
+export default [
+  main, forum
+]
