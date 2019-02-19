@@ -1,11 +1,11 @@
-export function Namespace(value = ''): Function {
+export function namespace(value = ''): Function {
   return (target: any) => {
     target.prototype.namespace = value
     return target
   }
 }
 
-export function Middleware(...middlewares: any[]): Function {
+export function middleware(...middlewares: any[]): Function {
   return (target: any, key: string, descriptor: any) => {
     if (key === undefined) {
       target.prototype.middleware = middlewares || []
@@ -17,7 +17,7 @@ export function Middleware(...middlewares: any[]): Function {
   }
 }
 
-export function Route(method: string, path: string): Function {
+export function route(method: string, path: string): Function {
   return (target: any, key: string, descriptor: any) => {
     target.actions = target.actions || []
     target.actions.push(key)
@@ -26,20 +26,4 @@ export function Route(method: string, path: string): Function {
     value.method = method
     return descriptor
   }
-}
-
-export function Get(path: string): Function {
-  return Route('get', path)
-}
-
-export function Post(path: string): Function {
-  return Route('post', path)
-}
-
-export function Put(path: string): Function {
-  return Route('put', path)
-}
-
-export function Delete(path: string): Function {
-  return Route('delete', path)
 }
