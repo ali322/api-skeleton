@@ -3,7 +3,7 @@ import { BaseContext } from 'koa'
 
 @namespace()
 class Main {
-  @route({ method: 'get', path: '/' })
+  @route('get', '/')
   public index(ctx: BaseContext): void {
     ctx.body = 'hello world'
   }

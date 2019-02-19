@@ -9,7 +9,7 @@ export async function connectDB(): Promise<void> {
     type: 'sqlite',
     database: join(__dirname, '..', 'data', 'demo.db'),
     synchronize: true,
-    logging: true,
+    logging: false,
     entities: [Post, Tag, Comment]
   })
 }

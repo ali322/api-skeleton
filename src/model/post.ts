@@ -1,6 +1,11 @@
 import {Entity, Column, PrimaryGeneratedColumn, BaseEntity} from 'typeorm'
 import { Length, IsDate, IsNotEmpty } from 'class-validator'
 
+/**
+ * @apiDefine PostModel
+ * @apiSuccess {number} id
+ * @apiSuccess {string} title
+ */
 @Entity()
 export class Post extends BaseEntity{
   @PrimaryGeneratedColumn()
