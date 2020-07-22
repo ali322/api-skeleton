@@ -2,23 +2,33 @@ import * as Koa from 'koa'
 import * as bodyparser from 'koa-bodyparser'
 import * as helmet from 'koa-helmet'
 import * as cors from '@koa/cors'
+import * as jwt from 'koa-jwt'
 import router from './router'
 import { logger, error } from './middleware'
 import { connectDB } from './model'
+import * as dotenv from 'dotenv'
 
-const app = new Koa()
+export default async (): Promise<Koa> => {
+  const app = new Koa()
 
-app.use(helmet())
-app.use(cors())
-app.use(bodyparser())
-app.use(logger())
-app.use(error())
+  dotenv.config()
 
-connectDB()
-
-app.use(router.routes())
-app.use(router.allowedMethods())
-
-app.listen(3000, () => {
-  console.log('Server running at port 3000')
-})
+  app.use(helmet())
+  app.use(cors())
+  app.use(bodyparser())
+  app.use(jwt({
+    secret: process.env.JWT_SECRET,
+  }).unless({
+    path: [/^\/api\/v1\/public/]
+  }))
+  app.use(logger())
+  app.use(error())
+  try {
+    await connectDB()
+  } catch (e) {
+    console.log('connect to database failed', e)
+  }
+  app.use(router.routes())
+  app.use(router.allowedMethods())
+  return app
+}

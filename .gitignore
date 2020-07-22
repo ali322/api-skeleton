@@ -2,3 +2,7 @@
 node_modules
 log
 doc
+dist
+test/report
+test/coverage
+test/.nyc_output

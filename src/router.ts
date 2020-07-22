@@ -1,24 +1,24 @@
 import * as Router from 'koa-router'
 import { join } from 'path'
-import controllers from './controller'
+import routes from './route'
 
 const router = new Router()
 
-function applyRoutes(router: any, ...controllers: any[]): void {
-  for (let i in controllers) {
-    const controller = controllers[i]
-    for (let k in controller.actions) {
-      const action = controller[controller.actions[k]]
+function applyRoutes(router: any, ...routes: any[]): void {
+  for (let i in routes) {
+    const route = routes[i]
+    for (let k in route.actions) {
+      const action = route[route.actions[k]]
       let middlewares: any[] = []
-      if (Array.isArray(controller.middleware)) {
-        middlewares = middlewares.concat(controller.middleware)
+      if (Array.isArray(route.middleware)) {
+        middlewares = middlewares.concat(route.middleware)
       }
       if (Array.isArray(action.middleware)) {
         middlewares = middlewares.concat(action.middleware)
       }
       router[action.method](
-        controller.namespace
-          ? join(controller.namespace, action.path)
+        route.namespace
+          ? join(route.namespace, action.path)
           : action.path,
         ...middlewares,
         action
@@ -27,6 +27,6 @@ function applyRoutes(router: any, ...controllers: any[]): void {
   }
 }
 
-applyRoutes(router, ...controllers)
+applyRoutes(router, ...routes)
 
 export default router

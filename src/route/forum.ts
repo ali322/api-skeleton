@@ -1,17 +1,19 @@
 import { BaseContext } from 'koa';
 import { ValidationError, validate } from 'class-validator';
 import { Repository, getManager } from 'typeorm';
-import { route, middleware} from '../lib/decorator'
+import { route, middleware, namespace } from '../lib/decorator'
+import { guard } from '../middleware'
 import { Post } from '../model';
 import { formatedValidationError } from '../lib/formater';
-import { guard } from 'src/middleware';
 
-class Forum{
+@namespace('/api/v1')
+class ForumRoute{
   @route('get', '/posts')
   @middleware(guard({
     query: {
-      page: 'required'
-    }
+      page: 'required',
+      limit: 'required',
+    } 
   }))
   async posts(ctx: BaseContext): Promise<void> {
     const postRepo: Repository<Post> = getManager().getRepository(Post)
@@ -41,4 +43,4 @@ class Forum{
 }
 
 
-export default new Forum()
+export default new ForumRoute()
