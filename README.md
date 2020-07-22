@@ -1,6 +1,26 @@
-# API Boilerplate
+API Skeleton
+===
 
-## Get Started
+fundamental skeleton of API project
 
-- npm i
-- npm start
+## development
+
+```bash
+npm start
+```
+
+## build
+
+```bash
+npm run build
+```
+
+## test
+
+```bash
+npm test
+```
+
+## License
+
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)
