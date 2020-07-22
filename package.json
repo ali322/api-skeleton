@@ -33,6 +33,7 @@
     "koa-router": "^7.4.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.13",
+    "mysql": "^2.18.1",
     "typeorm-naming-strategies": "^1.1.0",
     "uuid": "^8.2.0",
     "validatorjs": "^3.18.1",
