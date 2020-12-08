@@ -1,17 +1,24 @@
-import { BaseContext } from 'koa'
+import { Context } from 'koa'
 import { Repository, getManager } from 'typeorm'
 import { ValidationError, validate } from 'class-validator';
 import * as jwt from 'jsonwebtoken'
 import { v4 as uuidv4 } from 'uuid'
 import * as bcrypt from 'bcrypt'
-import { namespace, route } from '../lib/decorator'
+import { namespace, route, middleware } from '../lib/decorator'
+import { guard } from '../middleware'
 import { User } from '../model'
 import { formatedValidationError } from '../lib/formater';
 
 @namespace('/api/v1')
 class UserRoute {
   @route('get', '/public/user')
-  async all(ctx: BaseContext): Promise<void> {
+  @middleware(guard({
+    query: {
+      key: 'string', userID: 'string',
+      page: 'positive_integer', limit: 'positive_integer', sortBy: 'in:DESC,ASC'
+    }
+  }))
+  async all(ctx: Context): Promise<void> {
     const { key, userID, page = 1, limit = 10, sort = 'username', sortBy = 'DESC' } = ctx.query
     const repo: Repository<User> = getManager().getRepository(User)
     let qb = repo.createQueryBuilder("user")
@@ -28,7 +35,13 @@ class UserRoute {
     ctx.body = { code: 0, data: { count, rows } }
   }
   @route('post', '/public/user')
-  async create(ctx: BaseContext): Promise<void> {
+  @route('post', '/user')
+  @middleware(guard({
+    body: {
+      username: 'required|between:5,10', email: 'required|email'
+    }
+  }))
+  async create(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
     const { avatar, id, username, email } = ctx.request.body
     const created: User = new User()
@@ -46,7 +59,15 @@ class UserRoute {
     }
   }
   @route('post', '/public/register')
-  async register(ctx: BaseContext): Promise<void> {
+  @middleware(guard({
+    body: {
+      username: 'required|between:3,10',
+      password: 'required|between:3,10',
+      repeat: 'required|between:3,10',
+      email: 'required|email'
+    }
+  }))
+  async register(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
     const { username, password, repeat, email } = ctx.request.body
     if (password !== repeat) {
@@ -82,7 +103,13 @@ class UserRoute {
     }
   }
   @route('post', '/public/login')
-  async login(ctx: BaseContext): Promise<void> {
+  @middleware(guard({
+    body: {
+      username: 'required|between:3,10',
+      password: 'required|between:3,10',
+    }
+  }))
+  async login(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
     const { username, password } = ctx.request.body
     const exists = await repo.findOne({ username })
@@ -105,7 +132,14 @@ class UserRoute {
     }
   }
   @route('post', '/public/connect')
-  async connect(ctx: BaseContext): Promise<void> {
+  @middleware(guard({
+    body: {
+      id: 'required|string',
+      username: 'required|between:3,10',
+      email: 'required|email'
+    }
+  }))
+  async connect(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
     const { id, username, email } = ctx.request.body
     const exists = await repo.findOne(id)
@@ -142,14 +176,47 @@ class UserRoute {
       }
     }
   }
-
-  @route('put', '/user/:id')
-  async update(ctx: BaseContext): Promise<void> {
+  @route('post', '/change/user/:id/password')
+  @middleware(guard({
+    body: {
+      old: 'required|between:3,10',
+      newed: 'required|between:3,10',
+      repeat: 'required|between:3,10|same:newed'
+    }
+  }))
+  async changePassword(ctx: Context): Promise<void> {
     const id = ctx.params.id
-    const { avatar } = ctx.request.body
+    const { old, newed, repeat } = ctx.request.body
+    const repo: Repository<User> = getManager().getRepository(User)
+    const updated = await repo.findOne(id)
+    const isPasswordMatch = await bcrypt.compare(old, updated.password)
+    if (!isPasswordMatch) {
+      ctx.body = { code: -1, msg: '旧密码不正确' }
+    } else if (newed !== repeat) {
+      ctx.body = { code: -1, msg: '密码前后不一致' }
+    } else {
+      const cryptedPassword = await bcrypt.hash(newed, 10)
+      updated.password = cryptedPassword
+      const saved = await repo.save(updated)
+      ctx.status = 200
+      ctx.body = { code: 0, data: saved }
+    }
+  }
+  @route('put', '/user/:id')
+  @middleware(guard({
+    params: { id: 'required|string' },
+    body: {
+      avatar: 'string',
+      email: 'required|email'
+    }
+  }))
+  async update(ctx: Context): Promise<void> {
+    const id = ctx.params.id
+    const { avatar, email } = ctx.request.body
     const repo: Repository<User> = getManager().getRepository(User)
     const updated = await repo.findOne(id)
     updated.avatar = avatar
+    updated.email = email
     const errs: ValidationError[] = await validate(updated)
     if (errs.length > 0) {
       ctx.body = { code: -1, msg: formatedValidationError(errs) }
@@ -160,7 +227,10 @@ class UserRoute {
     }
   }
   @route('get', '/user/:id')
-  async one(ctx: BaseContext): Promise<void> {
+  @middleware(guard({
+    params: { id: 'required|string' }
+  }))
+  async one(ctx: Context): Promise<void> {
     const id = ctx.params.id
     const repo: Repository<User> = getManager().getRepository(User)
     const ret = await repo.findOne(id)
@@ -168,7 +238,10 @@ class UserRoute {
   }
 
   @route('delete', '/user/:id')
-  async delete(ctx: BaseContext): Promise<void> {
+  @middleware(guard({
+    params: { id: 'required|string' }
+  }))
+  async delete(ctx: Context): Promise<void> {
     const id = ctx.params.id
     const repo: Repository<User> = getManager().getRepository(User)
     const deleted = await repo.findOne(id)
