@@ -1,4 +1,4 @@
-import { BaseContext } from 'koa'
+import { Context } from 'koa'
 import * as Validator from 'validatorjs'
 
 Validator.useLang('zh')
@@ -48,7 +48,7 @@ Validator.setMessages('zh', {
 })
 
 export default (rules: Record<string, Record<string, string>>) => {
-  return async (ctx: BaseContext, next: () => Promise<any>) => {
+  return async (ctx: Context, next: () => Promise<any>) => {
     for (const key in rules) {
       if (Object.prototype.hasOwnProperty.call(rules, key)) {
         const data = key === 'body' ? ctx.request.body : ctx[key]
