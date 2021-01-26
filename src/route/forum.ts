@@ -1,4 +1,4 @@
-import { BaseContext } from 'koa';
+import { Context } from 'koa';
 import { ValidationError, validate } from 'class-validator';
 import { Repository, getManager } from 'typeorm';
 import { route, middleware, namespace } from '../lib/decorator'
@@ -15,7 +15,7 @@ class ForumRoute{
       limit: 'required',
     } 
   }))
-  async posts(ctx: BaseContext): Promise<void> {
+  async posts(ctx: Context): Promise<void> {
     const postRepo: Repository<Post> = getManager().getRepository(Post)
     const posts: Post[] = await postRepo.find()
 
@@ -23,7 +23,7 @@ class ForumRoute{
   }
 
   @route('post', '/post')
-  async createPost(ctx: BaseContext): Promise<void> {
+  async createPost(ctx: Context): Promise<void> {
     const postRepo: Repository<Post> = getManager().getRepository(Post)
     const { title, content } = ctx.request.body
     const post: Post = new Post()
