@@ -15,7 +15,7 @@ class UserRoute {
   @middleware(guard({
     query: {
       key: 'string', userID: 'string',
-      page: 'positive_integer', limit: 'positive_integer', sortBy: 'in:DESC,ASC'
+      page: 'positive_integer', limit: 'positive_integer', sort: 'id', sortBy: 'in:DESC,ASC'
     }
   }))
   async all(ctx: Context): Promise<void> {
