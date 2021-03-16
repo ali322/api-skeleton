@@ -7,6 +7,18 @@ class Main {
   public index(ctx: BaseContext): void {
     ctx.body = 'hello world'
   }
+  @route('get', '/public/message')
+  async all(ctx: Context): Promise<void> {
+      if (ctx.ws) {
+          const ws = await ctx.ws()
+          const { token } = ctx.query
+          ctx.bindWS(token, ws)
+          ws.send('connected')
+          ws.on('close', () => {
+              ctx.unbindWS(token)
+          })
+      }
+  }
 }
 
 export default new Main()
