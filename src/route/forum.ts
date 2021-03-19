@@ -1,20 +1,22 @@
-import { Context } from 'koa';
-import { ValidationError, validate } from 'class-validator';
-import { Repository, getManager } from 'typeorm';
+import { Context } from 'koa'
+import { ValidationError, validate } from 'class-validator'
+import { Repository, getManager } from 'typeorm'
 import { route, middleware, namespace } from '../lib/decorator'
 import { guard } from '../middleware'
-import { Post } from '../model';
-import { formatedValidationError } from '../lib/formater';
+import { Post } from '../model'
+import { formatedValidationError } from '../lib/formater'
 
 @namespace('/api/v1')
-class ForumRoute{
+class ForumRoute {
   @route('get', '/posts')
-  @middleware(guard({
-    query: {
-      page: 'required',
-      limit: 'required',
-    } 
-  }))
+  @middleware(
+    guard({
+      query: {
+        page: 'required',
+        limit: 'required'
+      }
+    })
+  )
   async posts(ctx: Context): Promise<void> {
     const postRepo: Repository<Post> = getManager().getRepository(Post)
     const posts: Post[] = await postRepo.find()
@@ -29,7 +31,6 @@ class ForumRoute{
     const post: Post = new Post()
     post.title = title
     post.content = content
-    post.created = new Date()
     const errs: ValidationError[] = await validate(post)
     if (errs.length > 0) {
       ctx.status = 400
@@ -41,6 +42,5 @@ class ForumRoute{
     }
   }
 }
-
 
 export default new ForumRoute()

@@ -17,9 +17,7 @@ function applyRoutes(router: any, ...routes: any[]): void {
         middlewares = middlewares.concat(action.middleware)
       }
       router[action.method](
-        route.namespace
-          ? join(route.namespace, action.path)
-          : action.path,
+        route.namespace ? join(route.namespace, action.path) : action.path,
         ...middlewares,
         action
       )

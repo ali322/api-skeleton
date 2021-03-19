@@ -1,13 +1,22 @@
-import { Entity, BaseEntity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, AfterInsert, AfterLoad, AfterUpdate } from 'typeorm'
+import {
+  Entity,
+  BaseEntity,
+  PrimaryColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  AfterInsert,
+  AfterLoad,
+  AfterUpdate
+} from 'typeorm'
 import { IsNotEmpty } from 'class-validator'
 import * as dayjs from 'dayjs'
 
 @Entity()
-export class User extends BaseEntity{
-  @PrimaryColumn("varchar", { length: 150 })
+export class User extends BaseEntity {
+  @PrimaryColumn('varchar', { length: 150 })
   @IsNotEmpty()
   id: string
-
 
   @Column()
   @IsNotEmpty()
@@ -24,7 +33,7 @@ export class User extends BaseEntity{
 
   @Column('text')
   password: string
-  
+
   @CreateDateColumn()
   createdAt: Date | string
 
@@ -33,17 +42,17 @@ export class User extends BaseEntity{
 
   @AfterLoad()
   loadDate(): void {
-    this.createdAt = dayjs(this.createdAt).format("YYYY-MM-DD HH:mm:ss")
-    this.updatedAt = dayjs(this.updatedAt).format("YYYY-MM-DD HH:mm:ss")
+    this.createdAt = dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    this.updatedAt = dayjs(this.updatedAt).format('YYYY-MM-DD HH:mm:ss')
   }
   @AfterInsert()
   insertDate(): void {
-    this.createdAt = dayjs(this.createdAt).format("YYYY-MM-DD HH:mm:ss")
-    this.updatedAt = dayjs(this.updatedAt).format("YYYY-MM-DD HH:mm:ss")
+    this.createdAt = dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    this.updatedAt = dayjs(this.updatedAt).format('YYYY-MM-DD HH:mm:ss')
   }
   @AfterUpdate()
   updateDate(): void {
-    this.createdAt = dayjs(this.createdAt).format("YYYY-MM-DD HH:mm:ss")
-    this.updatedAt = dayjs(this.updatedAt).format("YYYY-MM-DD HH:mm:ss")
+    this.createdAt = dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    this.updatedAt = dayjs(this.updatedAt).format('YYYY-MM-DD HH:mm:ss')
   }
 }

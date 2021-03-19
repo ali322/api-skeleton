@@ -2,8 +2,8 @@ import { BaseContext } from 'koa'
 import * as winston from 'winston'
 import { join } from 'path'
 
-export default () => {
-  return async (ctx: BaseContext, next: () => Promise<any>) => {
+export default (): any => {
+  return async (ctx: BaseContext, next: () => Promise<any>): Promise<void> => {
     const start: number = new Date().getMilliseconds()
     await next()
     const diff: number = new Date().getMilliseconds() - start
@@ -15,7 +15,7 @@ export default () => {
     } else {
       logLevel = 'info'
     }
-    const msg: string = `${ctx.method} ${ctx.url} ${ctx.status} ${diff}ms`
+    const msg = `${ctx.method} ${ctx.url} ${ctx.status} ${diff}ms`
     winston.configure({
       level: 'debug',
       transports: [

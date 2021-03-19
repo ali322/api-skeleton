@@ -1,5 +1,16 @@
-import {Entity, Column, PrimaryGeneratedColumn, BaseEntity} from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
+  AfterLoad,
+  AfterInsert,
+  AfterUpdate
+} from 'typeorm'
 import { Length, IsDate, IsNotEmpty } from 'class-validator'
+import * as dayjs from 'dayjs'
 
 /**
  * @apiDefine PostModel
@@ -7,7 +18,7 @@ import { Length, IsDate, IsNotEmpty } from 'class-validator'
  * @apiSuccess {string} title
  */
 @Entity()
-export class Post extends BaseEntity{
+export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -19,13 +30,31 @@ export class Post extends BaseEntity{
   @IsNotEmpty()
   content: string
 
-  @Column('date')
-  @IsDate()
-  created: Date
+  @CreateDateColumn()
+  createdAt: Date | string
+
+  @UpdateDateColumn()
+  updatedAt: Date | string
+
+  @AfterLoad()
+  loadDate(): void {
+    this.createdAt = dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    this.updatedAt = dayjs(this.updatedAt).format('YYYY-MM-DD HH:mm:ss')
+  }
+  @AfterInsert()
+  insertDate(): void {
+    this.createdAt = dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    this.updatedAt = dayjs(this.updatedAt).format('YYYY-MM-DD HH:mm:ss')
+  }
+  @AfterUpdate()
+  updateDate(): void {
+    this.createdAt = dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    this.updatedAt = dayjs(this.updatedAt).format('YYYY-MM-DD HH:mm:ss')
+  }
 }
 
 @Entity()
-export class Tag extends BaseEntity{
+export class Tag extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -36,7 +65,7 @@ export class Tag extends BaseEntity{
 }
 
 @Entity()
-export class Comment extends BaseEntity{
+export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 

@@ -16,11 +16,13 @@ export default async (): Promise<Koa> => {
   app.use(helmet())
   app.use(cors())
   app.use(bodyparser())
-  app.use(jwt({
-    secret: process.env.JWT_SECRET,
-  }).unless({
-    path: [/^\/api\/v1\/public/]
-  }))
+  app.use(
+    jwt({
+      secret: process.env.JWT_SECRET
+    }).unless({
+      path: [/^\/api\/v1\/public/]
+    })
+  )
   app.use(logger())
   app.use(error())
   app.use(ws())

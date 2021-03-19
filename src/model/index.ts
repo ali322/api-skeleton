@@ -16,7 +16,7 @@ export async function connectDB(): Promise<Connection> {
     }
   } catch (e) {
     return createConnection({
-      type: "mysql",
+      type: 'mysql',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USER,

@@ -1,12 +1,12 @@
 export function namespace(value = ''): Function {
-  return (target: any) => {
+  return (target: any): any => {
     target.prototype.namespace = value
     return target
   }
 }
 
 export function middleware(...middlewares: any[]): Function {
-  return (target: any, key: string, descriptor: any) => {
+  return (target: any, key: string, descriptor: any): any => {
     if (key === undefined) {
       target.prototype.middleware = middlewares || []
       return target
@@ -18,7 +18,7 @@ export function middleware(...middlewares: any[]): Function {
 }
 
 export function route(method: string, path: string): Function {
-  return (target: any, key: string, descriptor: any) => {
+  return (target: any, key: string, descriptor: any): any => {
     target.actions = target.actions || []
     target.actions.push(key)
     const value = descriptor.value
