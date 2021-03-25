@@ -16,11 +16,20 @@ function applyRoutes(router: any, ...routes: any[]): void {
       if (Array.isArray(action.middleware)) {
         middlewares = middlewares.concat(action.middleware)
       }
-      router[action.method](
-        route.namespace ? join(route.namespace, action.path) : action.path,
-        ...middlewares,
-        action
-      )
+      const mountRoute = (path: string): void => {
+        router[action.method](
+          route.namespace ? join(route.namespace, path) : path,
+          ...middlewares,
+          action
+        )
+      }
+      if (Array.isArray(action.path)) {
+        action.path.forEach((path: string): void => {
+          mountRoute(path)
+        })
+      } else {
+        mountRoute(action.path)
+      }
     }
   }
 }
