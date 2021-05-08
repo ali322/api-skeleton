@@ -15,6 +15,7 @@ export default async (): Promise<Koa> => {
 
   app.use(helmet())
   app.use(cors())
+  app.use(logger())
   app.use(bodyparser())
   app.use(
     jwt({
@@ -23,8 +24,6 @@ export default async (): Promise<Koa> => {
       path: [/^\/api\/v1\/public/]
     })
   )
-  app.use(logger())
-  app.use(error())
   app.use(ws())
   try {
     await connectDB()
