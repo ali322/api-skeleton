@@ -22,7 +22,7 @@ export default (): any => {
     const start: number = new Date().getMilliseconds()
     try {
       await next()
-    catch(err) {
+    }catch(err) {
       ctx.status = 200
       console.log('err', err)
       ctx.body = { code: -1, msg: err.message }
