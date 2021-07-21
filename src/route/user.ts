@@ -51,14 +51,14 @@ class UserRoute {
   @middleware(
     guard({
       body: {
-        username: 'required|between:5,10',
+        username: 'required|between:3,10',
         email: 'required|email'
       }
     })
   )
   async create(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
-    const { avatar, id, username, email } = ctx.request.body
+    const { avatar, id, username, email } = ctx.request.body as Record<string, any>
     const created: User = new User()
     created.avatar = avatar
     created.id = id
@@ -86,7 +86,7 @@ class UserRoute {
   )
   async register(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
-    const { username, password, repeat, email } = ctx.request.body
+    const { username, password, repeat, email } = ctx.request.body as Record<string, any>
     if (password !== repeat) {
       ctx.body = { code: -1, msg: 'password not matched' }
     } else {
@@ -132,7 +132,7 @@ class UserRoute {
   )
   async login(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
-    const { username, password } = ctx.request.body
+    const { username, password } = ctx.request.body as Record<string, any>
     const exists = await repo.findOne({ username })
     if (exists) {
       const isPasswordMatch = await bcrypt.compare(password, exists.password)
@@ -168,7 +168,7 @@ class UserRoute {
   )
   async connect(ctx: Context): Promise<void> {
     const repo: Repository<User> = getManager().getRepository(User)
-    const { id, username, email } = ctx.request.body
+    const { id, username, email } = ctx.request.body as Record<string, any>
     const exists = await repo.findOne(id)
     if (exists) {
       exists.lastLoginedAt = new Date()
@@ -219,7 +219,7 @@ class UserRoute {
   )
   async changePassword(ctx: Context): Promise<void> {
     const id = ctx.params.id
-    const { old, newed, repeat } = ctx.request.body
+    const { old, newed, repeat } = ctx.request.body as Record<string, any>
     const repo: Repository<User> = getManager().getRepository(User)
     const updated = await repo.findOne(id)
     const isPasswordMatch = await bcrypt.compare(old, updated.password)
@@ -247,7 +247,7 @@ class UserRoute {
   )
   async update(ctx: Context): Promise<void> {
     const id = ctx.params.id
-    const { avatar, email } = ctx.request.body
+    const { avatar, email } = ctx.request.body as Record<string, any>
     const repo: Repository<User> = getManager().getRepository(User)
     const updated = await repo.findOne(id)
     updated.avatar = avatar

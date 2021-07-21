@@ -27,7 +27,7 @@ class ForumRoute {
   @route('post', '/post')
   async createPost(ctx: Context): Promise<void> {
     const postRepo: Repository<Post> = getManager().getRepository(Post)
-    const { title, content } = ctx.request.body
+    const { title, content } = ctx.request.body as Record<string, any>
     const post: Post = new Post()
     post.title = title
     post.content = content

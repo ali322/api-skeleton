@@ -4,7 +4,7 @@ import * as helmet from 'koa-helmet'
 import * as cors from '@koa/cors'
 import * as jwt from 'koa-jwt'
 import router from './router'
-import { logger, error, ws } from './middleware'
+import { logger, ws } from './middleware'
 import { connectDB } from './model'
 import * as dotenv from 'dotenv'
 

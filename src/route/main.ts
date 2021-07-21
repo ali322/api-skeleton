@@ -1,9 +1,9 @@
 import { route, namespace } from '../lib/decorator'
 import { Context } from 'koa'
 
-@namespace()
+@namespace('/api/v1')
 class Main {
-  @route('get', '/')
+  @route('get', '/public/ping')
   public index(ctx: Context): void {
     ctx.body = 'hello world'
   }
