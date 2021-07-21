@@ -1,0 +1,24 @@
+{
+  "apps": [
+    {
+      "name": "api-skeleton",
+      "script": "./dist/index.js",
+      "watch": false,
+      "instances" : "3",
+      "exec_mode" : "cluster",
+      "env": {
+        "APP_PORT": 2000,
+        "DB_NAME": "api-skeleton"
+      }
+    },
+    {
+      "name": "api-skeleton-test",
+      "script": "./dist/index.js",
+      "watch": false,
+      "env": {
+        "APP_PORT": 2001,
+        "DB_NAME": "api-skeleton-test"
+      }
+    }
+  ]
+}
